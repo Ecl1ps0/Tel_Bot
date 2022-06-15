@@ -57,9 +57,12 @@ def lalala(message):
 def IIN(message):
     name = message.text
     if (get_user_by_name(name)):
+        print(get_all_appointments_of_user(name))
         bot.send_message(message.chat.id, get_all_appointments_of_user(name))
     else:
         bot.send_message(message.chat.id, "There is no such user.")
+
+    bot.set_state(message.from_user.id, States.main, message.chat.id)
 
 
 # RUN

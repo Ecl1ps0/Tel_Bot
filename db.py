@@ -13,8 +13,9 @@ appointments_collection = current_db["appointments"]
 def get_all_hospitals():
     return places_collection.find()
 
+
 def get_user_by_name(name):
-    if(appointments_collection.find({"name": name}) != None):
+    if (appointments_collection.find({"name": name}) != ""):
         return True
     else:
         return False
