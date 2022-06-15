@@ -4,6 +4,7 @@ from db import get_all_hospitals, get_user_by_name, get_all_appointments_of_user
 from states import States
 
 from telebot import types
+from telebot import custom_filters
 
 # mongodb link: mongodb+srv://gg:wp@cluster0.2qhvm.mongodb.net/?retryWrites=true&w=majority
 bot = telebot.TeleBot(config.TOKEN)
@@ -11,7 +12,6 @@ bot = telebot.TeleBot(config.TOKEN)
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-    print(789)
     sti = open('static/doc.webp', 'rb')
     bot.send_sticker(message.chat.id, sti)
 
@@ -25,19 +25,13 @@ def welcome(message):
     markup.add(item1, item2, item3, item4)
 
     bot.set_state(message.from_user.id, States.main, message.chat.id)
-
     bot.send_message(message.chat.id,
                      "Welcome " + "<b>" + message.from_user.first_name + "</b>" + "!\nI'm your own " + "<b>DenSaulyq Manager</b>" + ".".format(
                          message.from_user, bot.get_me()), parse_mode='html', reply_markup=markup)
 
 
-
-
-
-
 @bot.message_handler(state=States.main)
 def lalala(message):
-    print(456)
     if message.chat.type == 'private':
         if message.text == "🔍List all the hospitals":
             hospitals = get_all_hospitals()
@@ -59,14 +53,15 @@ def lalala(message):
             bot.send_message(message.chat.id, "Sorry, there is no such command.")
 
 
-
 @bot.message_handler(state=States.write_Name)
 def IIN(message):
-    print(123)
     name = message.text
     if (get_user_by_name(name)):
         bot.send_message(message.chat.id, get_all_appointments_of_user(name))
     else:
         bot.send_message(message.chat.id, "There is no such user.")
+
+
 # RUN
+bot.add_custom_filter(custom_filters.StateFilter(bot))
 bot.polling(none_stop=True)
